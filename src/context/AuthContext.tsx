@@ -1,6 +1,7 @@
 import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react'
 import * as authApi from '@/api/authApi'
 import { authStore } from '@/utils/authStore'
+import { hasStaffPermission, isStaffAdmin } from '@/utils/permissions'
 import type {
   LoginRequest,
   Portal,
@@ -12,6 +13,8 @@ import type {
 export interface AuthContextValue {
   session: StoredSession | null
   isAuthenticated: boolean
+  isAdmin: boolean
+  hasPermission: (key: string) => boolean
   login: (portal: Portal, request: LoginRequest) => Promise<StoredSession>
   registerStudent: (request: RegisterStudentRequest) => Promise<StoredSession>
   registerStaff: (request: RegisterStaffRequest) => Promise<StoredSession>
@@ -61,6 +64,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const value: AuthContextValue = {
     session,
     isAuthenticated: session !== null,
+    isAdmin: isStaffAdmin(session),
+    hasPermission: (key: string) => hasStaffPermission(session, key),
     login,
     registerStudent,
     registerStaff,

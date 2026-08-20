@@ -62,6 +62,9 @@ export interface AuthResponse {
   firstName: string
   lastName: string
   role: string
+  // Null/empty for Student sessions - only populated for Staff sessions.
+  staffRole?: StaffRole | null
+  permissions: string[]
   accessToken: string
   accessTokenExpiresAt: string
   refreshToken: string

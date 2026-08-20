@@ -36,8 +36,8 @@ export function useDeleteDocumentMutation() {
   })
 }
 
-export function usePendingDocumentsQuery() {
-  return useQuery({ queryKey: queryKeys.pendingDocuments, queryFn: documentApi.getPendingDocuments })
+export function usePendingDocumentsQuery(enabled = true) {
+  return useQuery({ queryKey: queryKeys.pendingDocuments, queryFn: documentApi.getPendingDocuments, enabled })
 }
 
 export function useReviewDocumentMutation() {

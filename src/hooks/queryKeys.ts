@@ -27,4 +27,8 @@ export const queryKeys = {
   myDocuments: ['documents', 'me'] as const,
   userDocuments: (userId: number) => ['documents', 'user', userId] as const,
   pendingDocuments: ['documents', 'pending'] as const,
+
+  staffList: ['staff-management', 'staff'] as const,
+  permissionCatalog: ['staff-management', 'permission-catalog'] as const,
+  staffPermissions: (staffUserId: number) => ['staff-management', 'staff', staffUserId, 'permissions'] as const,
 }

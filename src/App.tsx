@@ -6,8 +6,11 @@ import { StudentLayout } from '@/components/layout/StudentLayout'
 import { StaffLayout } from '@/components/layout/StaffLayout'
 import { ProtectedRoute } from '@/routes/ProtectedRoute'
 import { RoleRoute } from '@/routes/RoleRoute'
+import { PermissionRoute } from '@/routes/PermissionRoute'
+import { AdminRoute } from '@/routes/AdminRoute'
 import { GuestRoute } from '@/routes/GuestRoute'
 import { RootRedirect } from '@/routes/RootRedirect'
+import { StaffPermissionKey } from '@/types'
 import { useNotificationHub } from '@/hooks/useNotificationHub'
 
 const LoginPage = lazy(() => import('@/pages/auth/LoginPage'))
@@ -25,6 +28,7 @@ const StaffStudentDetailPage = lazy(() => import('@/pages/staff/StaffStudentDeta
 const StaffMessagesPage = lazy(() => import('@/pages/staff/StaffMessagesPage'))
 const StaffProgramsPage = lazy(() => import('@/pages/staff/StaffProgramsPage'))
 const StaffProgramDetailPage = lazy(() => import('@/pages/staff/StaffProgramDetailPage'))
+const StaffPermissionsPage = lazy(() => import('@/pages/staff/StaffPermissionsPage'))
 const UnauthorizedPage = lazy(() => import('@/pages/UnauthorizedPage'))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage'))
 
@@ -65,12 +69,28 @@ function App() {
             <Route element={<RoleRoute portal="staff" />}>
               <Route element={<StaffLayout />}>
                 <Route path="/staff/dashboard" element={<StaffDashboardPage />} />
-                <Route path="/staff/action-hub" element={<ActionHubPage />} />
-                <Route path="/staff/students" element={<StaffStudentsPage />} />
-                <Route path="/staff/students/:id" element={<StaffStudentDetailPage />} />
-                <Route path="/staff/messages" element={<StaffMessagesPage />} />
-                <Route path="/staff/programs" element={<StaffProgramsPage />} />
-                <Route path="/staff/programs/:id" element={<StaffProgramDetailPage />} />
+
+                <Route element={<PermissionRoute permission={StaffPermissionKey.ActionHub} />}>
+                  <Route path="/staff/action-hub" element={<ActionHubPage />} />
+                </Route>
+
+                <Route element={<PermissionRoute permission={StaffPermissionKey.Students} />}>
+                  <Route path="/staff/students" element={<StaffStudentsPage />} />
+                  <Route path="/staff/students/:id" element={<StaffStudentDetailPage />} />
+                </Route>
+
+                <Route element={<PermissionRoute permission={StaffPermissionKey.Programs} />}>
+                  <Route path="/staff/programs" element={<StaffProgramsPage />} />
+                  <Route path="/staff/programs/:id" element={<StaffProgramDetailPage />} />
+                </Route>
+
+                <Route element={<PermissionRoute permission={StaffPermissionKey.Messages} />}>
+                  <Route path="/staff/messages" element={<StaffMessagesPage />} />
+                </Route>
+
+                <Route element={<AdminRoute />}>
+                  <Route path="/staff/permissions" element={<StaffPermissionsPage />} />
+                </Route>
               </Route>
             </Route>
           </Route>

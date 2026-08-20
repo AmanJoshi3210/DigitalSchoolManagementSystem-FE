@@ -76,8 +76,8 @@ export function useReviewApplicationMutation(programId: number) {
   })
 }
 
-export function usePendingApplicationsQuery() {
-  return useQuery({ queryKey: queryKeys.pendingApplications, queryFn: programApi.getPendingApplications })
+export function usePendingApplicationsQuery(enabled = true) {
+  return useQuery({ queryKey: queryKeys.pendingApplications, queryFn: programApi.getPendingApplications, enabled })
 }
 
 // Same review call as useReviewApplicationMutation, but for the Action Hub, which reviews

@@ -119,6 +119,17 @@ export const StaffRoleLabels: Record<number, string> = {
   [StaffRole.Admin]: 'Admin',
 }
 
+// Grantable staff-portal page permissions (mirrors Domain.Constants.StaffPermissionKeys).
+// Unlike the enums above, these are stable string identifiers (claim values / DB row values),
+// not numeric - deliberately not following this file's numeric-enum-plus-Labels pattern.
+export const StaffPermissionKey = {
+  ActionHub: 'ActionHub',
+  Students: 'Students',
+  Programs: 'Programs',
+  Messages: 'Messages',
+} as const
+export type StaffPermissionKey = (typeof StaffPermissionKey)[keyof typeof StaffPermissionKey]
+
 export const ApplicationStatus = {
   Pending: 0,
   Approved: 1,
