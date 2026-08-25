@@ -1,7 +1,8 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Pencil } from 'lucide-react'
-import { useMyProfileQuery, useMyAcademicsQuery, useMyEducationStatusQuery } from '@/hooks/useProfile'
+import toast from 'react-hot-toast'
+import { Camera, Loader2, Pencil } from 'lucide-react'
+import { useMyProfileQuery, useMyAcademicsQuery, useMyEducationStatusQuery, useUpdateMyProfileImageMutation } from '@/hooks/useProfile'
 import { PageHeader } from '@/components/ui/PageHeader'
 import { Card, CardBody, CardHeader } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -13,15 +14,47 @@ import { ProfileInfoGrid } from '@/components/students/ProfileInfoGrid'
 import { EnrollmentStatusBadge } from '@/components/students/StatusBadge'
 import { EditOwnProfileForm } from '@/components/forms/EditOwnProfileForm'
 import { formatDate, fullName } from '@/utils/formatters'
+import { getErrorMessage } from '@/utils/errors'
 import { EducationLevelLabels, GenderLabels, enumLabel } from '@/types'
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024 // matches FileStorage:MaxFileSizeBytes on the backend
 
 export default function StudentProfilePage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [editing, setEditing] = useState(searchParams.get('edit') === '1')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const { data: student, isPending, isError, error, refetch } = useMyProfileQuery()
   const { data: educationStatus } = useMyEducationStatusQuery()
   const { data: academics } = useMyAcademicsQuery()
+  const uploadImageMutation = useUpdateMyProfileImageMutation()
+
+  function handlePhotoButtonClick() {
+    fileInputRef.current?.click()
+  }
+
+  async function handlePhotoChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    e.target.value = '' // allow re-selecting the same file later
+    if (!file) return
+
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      toast.error('Please choose a JPEG, PNG, WEBP or GIF image.')
+      return
+    }
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      toast.error('Image must be 10MB or smaller.')
+      return
+    }
+
+    try {
+      await uploadImageMutation.mutateAsync(file)
+      toast.success('Profile photo updated')
+    } catch (err) {
+      toast.error(getErrorMessage(err, 'Could not upload your profile photo.'))
+    }
+  }
 
   function stopEditing() {
     setEditing(false)
@@ -49,7 +82,30 @@ export default function StudentProfilePage() {
 
       <Card>
         <CardBody className="flex flex-col items-start gap-4 sm:flex-row sm:items-center">
-          <Avatar firstName={student.firstName} lastName={student.lastName} imageUrl={student.profileImageUrl} size="lg" />
+          <div className="relative shrink-0">
+            <Avatar firstName={student.firstName} lastName={student.lastName} imageUrl={student.profileImageUrl} size="lg" />
+            <button
+              type="button"
+              onClick={handlePhotoButtonClick}
+              disabled={uploadImageMutation.isPending}
+              aria-label="Change profile photo"
+              title="Change profile photo"
+              className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border border-white bg-brand-600 text-white shadow-sm transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:bg-brand-300"
+            >
+              {uploadImageMutation.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" aria-hidden />
+              ) : (
+                <Camera className="size-3.5" aria-hidden />
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept={ALLOWED_IMAGE_TYPES.join(',')}
+              className="hidden"
+              onChange={handlePhotoChange}
+            />
+          </div>
           <div>
             <h2 className="text-lg font-semibold text-slate-900">{fullName(student.firstName, student.lastName)}</h2>
             <p className="text-sm text-slate-500">{student.email}</p>

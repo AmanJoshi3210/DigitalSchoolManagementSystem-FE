@@ -24,3 +24,16 @@ export function useUpdateMyProfileMutation() {
     },
   })
 }
+
+export function useUpdateMyProfileImageMutation() {
+  const queryClient = useQueryClient()
+  return useMutation({
+    mutationFn: studentApi.updateMyProfileImage,
+    onSuccess: (result) => {
+      queryClient.setQueryData<Awaited<ReturnType<typeof studentApi.getMyProfile>>>(queryKeys.myProfile, (prev) =>
+        prev ? { ...prev, profileImageUrl: result.url } : prev,
+      )
+      queryClient.invalidateQueries({ queryKey: queryKeys.home })
+    },
+  })
+}

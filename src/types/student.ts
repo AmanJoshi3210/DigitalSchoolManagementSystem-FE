@@ -33,7 +33,6 @@ export interface UpdateOwnProfileRequest {
   address?: string | null
   dateOfBirth?: string | null
   gender?: Gender | null
-  profileImageUrl?: string | null
   educationLevel?: EducationLevel | null
 }
 
@@ -45,7 +44,6 @@ export interface UpdateStudentRequest {
   address?: string | null
   dateOfBirth?: string | null
   gender?: Gender | null
-  profileImageUrl?: string | null
   grade: string
   section: string
   rollNumber: string

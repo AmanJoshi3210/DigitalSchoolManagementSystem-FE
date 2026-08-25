@@ -9,7 +9,7 @@ import { DocumentStatusBadge } from './DocumentStatusBadge'
 import { openDocument } from '@/api/documentApi'
 import { formatDateTime, formatFileSize } from '@/utils/formatters'
 import { getErrorMessage } from '@/utils/errors'
-import { DocumentStatus, type Document } from '@/types'
+import { DocumentStatus, DocumentType, type Document } from '@/types'
 
 export function DocumentList({
   documents,
@@ -42,13 +42,17 @@ export function DocumentList({
     )
   }
 
-  if (!documents || documents.length === 0) {
+  // Profile photos are managed exclusively from the Profile page - never show them in a
+  // general document list.
+  const visibleDocuments = documents?.filter((doc) => doc.documentType !== DocumentType.ProfilePhoto)
+
+  if (!visibleDocuments || visibleDocuments.length === 0) {
     return <EmptyState icon={FileText} title={emptyTitle} description={emptyDescription} />
   }
 
   return (
     <ul className="divide-y divide-slate-100">
-      {documents.map((doc) => (
+      {visibleDocuments.map((doc) => (
         <DocumentRow key={doc.id} doc={doc} onDelete={onDelete} deleting={deletingId === doc.id} />
       ))}
     </ul>

@@ -17,7 +17,6 @@ export function EditStudentForm({ student, onCancel, onSuccess }: { student: Stu
     address: student.address ?? '',
     dateOfBirth: toDateInputValue(student.dateOfBirth),
     gender: student.gender ?? undefined,
-    profileImageUrl: student.profileImageUrl ?? '',
     grade: student.grade,
     section: student.section,
     rollNumber: student.rollNumber,
@@ -42,7 +41,6 @@ export function EditStudentForm({ student, onCancel, onSuccess }: { student: Stu
         phoneNumber: form.phoneNumber || null,
         address: form.address || null,
         dateOfBirth: form.dateOfBirth || null,
-        profileImageUrl: form.profileImageUrl || null,
         guardianName: form.guardianName || null,
         guardianPhoneNumber: form.guardianPhoneNumber || null,
         bloodGroup: form.bloodGroup || null,
@@ -102,16 +100,6 @@ export function EditStudentForm({ student, onCancel, onSuccess }: { student: Stu
             </option>
           ))}
         </Select>
-
-        <div className="sm:col-span-2">
-          <Input
-            label="Profile Image URL"
-            placeholder="https://…"
-            value={form.profileImageUrl ?? ''}
-            onChange={(e) => update('profileImageUrl', e.target.value)}
-            error={fieldError(error, 'profileImageUrl')}
-          />
-        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-2">

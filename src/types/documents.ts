@@ -32,3 +32,11 @@ export interface ReviewDocumentRequest {
   status: DocumentStatus
   reviewNotes?: string | null
 }
+
+// Matches StoredFileResult - returned by the profile-image upload endpoint
+export interface StoredFileResult {
+  url: string
+  fileName: string
+  contentType: string
+  fileSize: number
+}

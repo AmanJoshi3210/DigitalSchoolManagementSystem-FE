@@ -17,7 +17,6 @@ export function EditOwnProfileForm({ student, onCancel, onSuccess }: { student: 
     address: student.address ?? '',
     dateOfBirth: toDateInputValue(student.dateOfBirth),
     gender: student.gender ?? undefined,
-    profileImageUrl: student.profileImageUrl ?? '',
     educationLevel: student.educationLevel ?? undefined,
   })
   const [error, setError] = useState<unknown>(null)
@@ -36,7 +35,6 @@ export function EditOwnProfileForm({ student, onCancel, onSuccess }: { student: 
         phoneNumber: form.phoneNumber || null,
         address: form.address || null,
         dateOfBirth: form.dateOfBirth || null,
-        profileImageUrl: form.profileImageUrl || null,
       })
       toast.success('Profile updated')
       onSuccess()
@@ -115,16 +113,6 @@ export function EditOwnProfileForm({ student, onCancel, onSuccess }: { student: 
             </option>
           ))}
         </Select>
-        <div className="sm:col-span-2">
-          <Input
-            label="Profile Image URL"
-            placeholder="https://…"
-            hint="Paste a link to an image - there's no file upload endpoint on the backend yet"
-            value={form.profileImageUrl ?? ''}
-            onChange={(e) => update('profileImageUrl', e.target.value)}
-            error={fieldError(error, 'profileImageUrl')}
-          />
-        </div>
       </div>
 
       <div className="flex justify-end gap-2 pt-2">

@@ -10,6 +10,12 @@ import { getErrorMessage } from '@/utils/errors'
 import { formatFileSize } from '@/utils/formatters'
 import { DocumentType, DocumentTypeLabels } from '@/types'
 
+// Profile photos are uploaded exclusively from the Profile page, not through this general
+// document uploader - exclude that option here.
+const uploadableDocumentTypes = Object.entries(DocumentTypeLabels).filter(
+  ([value]) => Number(value) !== DocumentType.ProfilePhoto,
+)
+
 export function DocumentUploadModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [documentType, setDocumentType] = useState<DocumentType>(DocumentType.Other)
   const [description, setDescription] = useState('')
@@ -50,7 +56,7 @@ export function DocumentUploadModal({ open, onClose }: { open: boolean; onClose:
           value={documentType}
           onChange={(e) => setDocumentType(Number(e.target.value) as DocumentType)}
         >
-          {Object.entries(DocumentTypeLabels).map(([value, label]) => (
+          {uploadableDocumentTypes.map(([value, label]) => (
             <option key={value} value={value}>
               {label}
             </option>
