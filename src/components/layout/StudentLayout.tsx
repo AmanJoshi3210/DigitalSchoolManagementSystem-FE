@@ -1,5 +1,6 @@
 import { FileText, GraduationCap, LayoutDashboard, MessageSquare, User } from 'lucide-react'
 import { PortalLayout, type NavItem } from './PortalLayout'
+import { AssistantWidget } from '@/components/assistant/AssistantWidget'
 
 const navItems: NavItem[] = [
   { label: 'Dashboard', to: '/student/dashboard', icon: LayoutDashboard },
@@ -10,5 +11,5 @@ const navItems: NavItem[] = [
 ]
 
 export function StudentLayout() {
-  return <PortalLayout portal="student" portalLabel="Student Portal" navItems={navItems} />
+  return <PortalLayout portal="student" portalLabel="Student Portal" navItems={navItems} extra={<AssistantWidget />} />
 }

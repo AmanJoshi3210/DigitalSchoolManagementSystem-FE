@@ -1,4 +1,4 @@
-import { useState, type ComponentType } from 'react'
+import { useState, type ComponentType, type ReactNode } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { GraduationCap, Menu, X } from 'lucide-react'
 import clsx from 'clsx'
@@ -21,10 +21,13 @@ export function PortalLayout({
   portal,
   portalLabel,
   navItems,
+  extra,
 }: {
   portal: Portal
   portalLabel: string
   navItems: NavItem[]
+  // Portal-specific overlays (e.g. the student assistant widget) rendered alongside the page.
+  extra?: ReactNode
 }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const { data: unreadCount } = useUnreadCountQuery()
@@ -82,6 +85,8 @@ export function PortalLayout({
           <Outlet />
         </main>
       </div>
+
+      {extra}
     </div>
   )
 }
